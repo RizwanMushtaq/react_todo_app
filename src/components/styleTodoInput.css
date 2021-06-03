@@ -1,0 +1,27 @@
+.inputField{
+    width: 20rem;
+    height: 2rem;
+    font-size: 1.5rem;
+    border: none;
+    outline: none;
+    padding-left: 0.5rem;
+}
+.buttonSpan{
+    z-index: 100;
+    pointer-events: none;
+}
+.addTodoButton{
+    z-index: -100;
+    width: 5rem;
+    height: 2rem;
+    font-size: 1.5rem;
+    border: none;
+    outline: none;
+}
+.addTodoButton[disabled]{
+    pointer-events: none;
+}
+.addTodoButton:hover{
+    background-color: gray;
+    color: white;
+}

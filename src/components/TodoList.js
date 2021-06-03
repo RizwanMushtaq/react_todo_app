@@ -1,15 +1,24 @@
 import React, { Component } from 'react'
+import './styleTodoList.css'
 
 class TodoList extends Component {
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+             
+        }
+    }
+    
     render() {
         return (
-            <div>
-                <ul>
-                    
-                </ul>
-            </div>
-        )
+            <ul className='todoUL'>
+                Hello
+            </ul>
+            )
     }
 }
 
 export default TodoList
+
+
