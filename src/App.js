@@ -25,21 +25,24 @@ class App extends Component {
     }else{
       this.setState( 
         (state) => {
-          const todoArray = state.todoArray.concat(
+          let todoArray = state.todoArray.concat(
             {id: state.count,
             title: inputFieldText,
             done: false}
           )
-          const count = state.count + 1
+          
+          let count = state.count + 1
   
           return {
-            todoArray,
+            todoArray, 
             count
           }
         },
         () => {
-          // console.log(this.state.count)
+          console.log(this.state.count)
           console.log(this.state.todoArray)
+          //Saving data in Local Storage
+          this.saveDataInLocalStorage(this.state.todoArray)
         }
       )
 
@@ -49,7 +52,7 @@ class App extends Component {
     //Clear Input field after adding item to the list
     document.querySelector(".inputField").value = ''
     event.preventDefault()
-
+    
   }
 
   //Function to be called when setting item to done state*****************************************************************
@@ -64,15 +67,15 @@ class App extends Component {
         state.todoArray.forEach(element => {
 
           if(element.id === parseInt(event.target.parentElement.parentElement.id)){
-            console.log('condition true')
             element.done = true
           }
-
         });
+        return (state.todoArray)
       },
       () => {
         // console.log(this.state.count)
         console.log(this.state.todoArray)
+        this.saveDataInLocalStorage(this.state.todoArray)
       }
     )
 
@@ -80,28 +83,75 @@ class App extends Component {
 
   //function to be called when deleting item from the list*****************************************************************
   updateToDeleteTodo = (event)=> {
-
     this.setState(
       (state) => {
-        let updatedArray
         state.todoArray.forEach(element=>{
           if(element.id === parseInt(event.target.parentElement.parentElement.id)){
-            console.log('delete condition true')
             let index = state.todoArray.indexOf(element)
             if(index > -1){
-              updatedArray = state.todoArray.splice(index,1)
+              state.todoArray.splice(index,1)
             }
           }
         })
-        return updatedArray
+        return (state.todoArray)
       },
       () => {
         // console.log(this.state.count)
         console.log(this.state.todoArray)
+        this.saveDataInLocalStorage(this.state.todoArray)
       }
     )
   }
 
+  //Function to save data in Local storage*****************************************************************
+  saveDataInLocalStorage = (arrayData)=> {
+    localStorage.setItem("myTodoList", JSON.stringify(arrayData))
+  }
+  //Function to set item to done by reading dataarray (its called on window onload time)*****************************************************************
+  updateDoneItemsinDOM = (arrayData)=> {
+    let todoLI = document.querySelectorAll('.todoLI');
+    // console.log(todoLI);
+    // console.log(arrayData);
+    if(arrayData){
+      arrayData.forEach(element=>{
+        if(element.done){
+          todoLI.forEach(item=> {
+            if(parseInt(item.id) === element.id){
+              item.firstChild.style.textDecoration = 'line-through'
+              item.style.backgroundColor = '#d3d3d3'
+            }
+          })
+        }
+      })
+    }
+    
+  }
+  //Function to load data from Local Storage*****************************************************************
+  componentDidMount(){
+    console.log('In component did mount function')
+    let arrayData = JSON.parse(localStorage.getItem("myTodoList"))
+    
+    if(arrayData){
+      this.setState(
+        (state)=> {
+          state.todoArray = arrayData
+          let maxId = 1
+          arrayData.forEach(item => {
+            if(item.id>maxId){
+              maxId = item.id
+            } 
+          })
+          state.count = maxId+1
+          return (state.todoArray, state.count)
+        },
+        () => {
+          console.log(this.state.todoArray)
+          console.log(this.state.count)
+          this.updateDoneItemsinDOM(this.state.todoArray)
+        }
+      )
+    }
+  }
   //Function to render DOM*****************************************************************
   render() {
     return (
@@ -114,7 +164,7 @@ class App extends Component {
 
           <ul className='todoUL'>
             {this.state.todoArray.map(item => (
-              <li key={item.id} id={item.id}> 
+              <li key={item.id} id={item.id} className='todoLI'> 
                 <p>{item.title}</p>
                 <div>
                   <button onClick={this.updateToDoneTodo}>Done</button>
