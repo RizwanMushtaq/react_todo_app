@@ -2,35 +2,28 @@ import React from 'react'
 import './styleTodoInput.css' 
 
 function TodoInput(props) {
-    
-    function updateAddButton(){
-        console.log("updateAddButton function")
+
+    function updateInputField(){
         if(document.querySelector('.inputField').value.trim() === '' ){
-            document.querySelector('.addTodoButton').disabled = true;
-            document.querySelector('.buttonSpan').style.pointerEvents = 'none';
+            //do nothing
         }else{
-            document.querySelector('.addTodoButton').disabled = false;
-            document.querySelector('.buttonSpan').style.pointerEvents = 'all';
+            document.querySelector(".inputField").style.border = "none"
         }
     }
 
     return (
         <div>
-            <input type='text' 
-            className='inputField'
-            onChange= {updateAddButton}>
-            </input>
+            <form onSubmit= {props.addTodoHandler}>
+                <input type='text' 
+                className='inputField'
+                onInput= {updateInputField}>
+                </input>
 
-            <span className='buttonSpan'
-            onClick = {()=> props.addTodoHandler(document.querySelector('.inputField').value)}>
-
-            <button
-            className='addTodoButton' 
-            disabled>
-            Add</button>
-            
-            </span>
-
+                <button
+                className='addTodoButton' 
+                type= 'submit'>
+                Add</button>
+            </form>
         </div>
     )
 }
